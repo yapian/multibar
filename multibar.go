@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/fatih/color"
 	"github.com/sethgrid/curse"
 )
 
@@ -138,8 +139,9 @@ func (p *ProgressBar) Update(progress int) {
 	}
 
 	percent := ""
+	asInt := 0
 	if p.ShowPercent {
-		asInt := int(100 * (float32(progress) / float32(p.Total)))
+		asInt = int(100 * (float32(progress) / float32(p.Total)))
 		padding := ""
 		if asInt < 10 {
 			padding = "  "
@@ -158,7 +160,16 @@ func (p *ProgressBar) Update(progress int) {
 	c, _ := curse.New()
 	c.Move(1, p.Line)
 	c.EraseCurrentLine()
-	fmt.Printf("\r%s %s%c%s%c%s", p.Prepend, percent, p.LeftEnd, strings.Join(bar, ""), p.RightEnd, timeElapsed)
+	//fmt.Printf("\r%s %s%c%s%c%s", p.Prepend, percent, p.LeftEnd, strings.Join(bar, ""), p.RightEnd, timeElapsed)
+	if asInt < 50 {
+		color.Red("\r%s %c%s%c%s %s", p.Prepend, p.LeftEnd, strings.Join(bar, ""), p.RightEnd, percent, timeElapsed)
+	} else if asInt < 80 {
+		color.Magenta("\r%s %c%s%c%s %s", p.Prepend, p.LeftEnd, strings.Join(bar, ""), p.RightEnd, percent, timeElapsed)
+	} else if asInt < 95 {
+		color.Yellow("\r%s %c%s%c%s %s", p.Prepend, p.LeftEnd, strings.Join(bar, ""), p.RightEnd, percent, timeElapsed)
+	} else if asInt >= 95 {
+		color.Green("\r%s %c%s%c%s %s", p.Prepend, p.LeftEnd, strings.Join(bar, ""), p.RightEnd, percent, timeElapsed)
+	}
 	c.Move(c.StartingPosition.X, c.StartingPosition.Y)
 }
 
