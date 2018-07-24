@@ -174,7 +174,7 @@ func (p *ProgressBar) Update(progress int) {
 }
 
 func prettyTime(t time.Duration) string {
-	re, err := regexp.Compile(`(\d+).(\d+)(\w+)`)
+	re, err := regexp.Compile(`(.+)\.(\d+)(\w+)`)
 	if err != nil {
 		return err.Error()
 	}
